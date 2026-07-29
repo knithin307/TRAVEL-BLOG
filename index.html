@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Wanderscape - An immersive, premium travel blog layout for sharing stories, stunning photographs, and memorable travel experiences.">
+    <title>Wanderscape | Capture the Journey</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fa-solid fa-compass compass-logo"></i> Wanderscape
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="#" class="nav-link active" data-target="home">Home</a>
+                <a href="#map-section" class="nav-link" data-target="map">Travel Map</a>
+                <a href="#blog-section" class="nav-link" data-target="blog">Stories</a>
+                <a href="#gallery-section" class="nav-link" data-target="gallery">Gallery</a>
+                <a href="#share-section" class="nav-btn-share"><i class="fa-solid fa-feather"></i> Share Story</a>
+            </div>
+            <div class="nav-controls">
+                <div class="search-box">
+                    <input type="text" id="global-search" placeholder="Search destinations...">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                </div>
+                <button id="theme-toggle" class="control-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon theme-icon-dark"></i>
+                    <i class="fa-solid fa-sun theme-icon-light" style="display: none;"></i>
+                </button>
+                <button class="mobile-nav-toggle" id="mobile-toggle" aria-label="Open Navigation">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="home">
+        <div class="hero-bg-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-subtitle">WANDERLUST & STORIES</span>
+            <h1 class="hero-title">Capture the Journey,<br><span class="accent-text">Live the Adventure</span></h1>
+            <p class="hero-desc">Explore majestic landscapes, quiet escapes, and local cultures through the eyes of passionate travelers. Your next adventure starts here.</p>
+            <div class="hero-cta-group">
+                <a href="#blog-section" class="btn btn-primary">Read Stories</a>
+                <a href="#share-section" class="btn btn-secondary">Share Your Travel</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" data-val="48">0</span>
+                    <span class="stat-label">Destinations Visited</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" data-val="120">0</span>
+                    <span class="stat-label">Travel Stories</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" data-val="15">0</span>
+                    <span class="stat-label">Country Guides</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll to Explore</span>
+            <div class="mouse-icon">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Interactive Travel Map Section -->
+    <section class="map-section" id="map-section">
+        <div class="section-container">
+            <div class="section-header text-center">
+                <span class="section-tag">Interactive World</span>
+                <h2 class="section-title">Where We've Been</h2>
+                <p class="section-subtitle">Click on any coordinates map pin to filter blog posts and view stories from that part of the globe.</p>
+            </div>
+            
+            <div class="map-wrapper">
+                <!-- Inline Custom SVG Map representing stylized continents -->
+                <svg id="world-map" viewBox="0 0 1000 500" class="svg-map">
+                    <defs>
+                        <radialGradient id="pin-glow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.6" />
+                            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <!-- Stylized background world continents grid -->
+                    <!-- North America -->
+                    <path class="map-continent" d="M120,100 L220,90 L280,140 L280,200 L200,240 L160,260 L140,240 L80,180 Z" />
+                    <!-- South America -->
+                    <path class="map-continent" d="M200,280 L250,290 L290,340 L270,420 L230,460 L210,430 L190,340 Z" />
+                    <!-- Greenland -->
+                    <path class="map-continent" d="M280,40 L340,30 L370,60 L320,80 Z" />
+                    <!-- Europe & Asia -->
+                    <path class="map-continent" d="M420,80 L520,70 L650,60 L800,80 L880,100 L900,160 L860,220 L840,240 L720,260 L680,290 L600,250 L560,280 L500,260 L440,220 L400,160 Z" />
+                    <!-- Africa -->
+                    <path class="map-continent" d="M420,240 L480,230 L540,260 L570,320 L550,380 L510,420 L460,350 L420,290 Z" />
+                    <!-- Australia -->
+                    <path class="map-continent" d="M780,340 L840,330 L870,360 L850,400 L790,400 Z" />
+                    <!-- Islands (Japan, UK, Indonesia, Madagascar) -->
+                    <circle class="map-island" cx="890" cy="150" r="8" />
+                    <circle class="map-island" cx="410" cy="110" r="7" />
+                    <circle class="map-island" cx="760" cy="300" r="10" />
+                    <circle class="map-island" cx="580" cy="410" r="6" />
+
+                    <!-- Pins representing our custom stories -->
+                    <!-- Pin Kyoto (Asia) -->
+                    <g class="map-pin" data-destination="Kyoto" transform="translate(885, 160)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="12" y="4">Kyoto, Japan</text>
+                    </g>
+                    <!-- Pin Swiss Alps (Europe) -->
+                    <g class="map-pin" data-destination="Swiss Alps" transform="translate(460, 130)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="12" y="4">Swiss Alps</text>
+                    </g>
+                    <!-- Pin Sahara (Africa) -->
+                    <g class="map-pin" data-destination="Sahara Desert" transform="translate(470, 260)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="12" y="4">Sahara, Morocco</text>
+                    </g>
+                    <!-- Pin Amalfi Coast (Europe) -->
+                    <g class="map-pin" data-destination="Amalfi Coast" transform="translate(485, 165)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="-105" y="4">Amalfi Coast, Italy</text>
+                    </g>
+                    <!-- Pin New York (Americas) -->
+                    <g class="map-pin" data-destination="New York" transform="translate(210, 140)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="12" y="4">New York, USA</text>
+                    </g>
+                    <!-- Pin Patagonia (Americas) -->
+                    <g class="map-pin" data-destination="Patagonia" transform="translate(240, 430)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="12" y="4">Patagonia, Argentina</text>
+                    </g>
+                    <!-- Pin Sydney (Oceania) -->
+                    <g class="map-pin" data-destination="Sydney" transform="translate(840, 380)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="-105" y="4">Sydney, Australia</text>
+                    </g>
+                    <!-- Pin India (Asia) -->
+                    <g class="map-pin" data-destination="India" transform="translate(685, 220)">
+                        <circle class="pin-pulse" cx="0" cy="0" r="15" fill="url(#pin-glow)" />
+                        <circle class="pin-dot" cx="0" cy="0" r="5" />
+                        <text class="pin-label" x="12" y="4">India</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog & Stories Feed Section -->
+    <section class="blog-section" id="blog-section">
+        <div class="section-container">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Travel Journals</span>
+                    <h2 class="section-title">Latest Adventures</h2>
+                </div>
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">All Stories</button>
+                    <button class="filter-btn" data-filter="Europe">Europe</button>
+                    <button class="filter-btn" data-filter="Asia">Asia</button>
+                    <button class="filter-btn" data-filter="Africa">Africa</button>
+                    <button class="filter-btn" data-filter="Americas">Americas</button>
+                    <button class="filter-btn" data-filter="Oceania">Oceania</button>
+                </div>
+            </div>
+
+            <!-- Blog Grid Feed -->
+            <div class="blog-grid" id="blog-grid">
+                <!-- Dynamic Content Loaded by app.js -->
+            </div>
+            
+            <div class="no-results" id="no-results" style="display: none;">
+                <i class="fa-solid fa-compass-drafting no-results-icon"></i>
+                <h3>No stories found</h3>
+                <p>We couldn't find any articles matching your search or filters. Try another term or clear active filters.</p>
+                <button class="btn btn-primary" id="clear-filters-btn">View All Stories</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Gallery Section -->
+    <section class="gallery-section" id="gallery-section">
+        <div class="section-container">
+            <div class="section-header text-center">
+                <span class="section-tag">Visual Journeys</span>
+                <h2 class="section-title">Capturing The Moment</h2>
+                <p class="section-subtitle">A collection of snap-shots and breathtaking landscapes captured during our travels around the world.</p>
+            </div>
+            
+            <!-- Gallery Masonry Grid -->
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- Loaded dynamically by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Share Your Story Section (Form) -->
+    <section class="share-section" id="share-section">
+        <div class="section-container">
+            <div class="share-layout">
+                <div class="share-info">
+                    <span class="section-tag">Submit Experience</span>
+                    <h2 class="section-title">What's Your Next Story?</h2>
+                    <p class="share-desc">Have you recently completed an amazing trek, explored a hidden city, or had a local meal that changed your life? Share your experience with the Wanderscape community.</p>
+                    
+                    <ul class="share-benefits">
+                        <li><i class="fa-solid fa-check"></i> Inspire fellow travelers worldwide</li>
+                        <li><i class="fa-solid fa-check"></i> Showcase your photography</li>
+                        <li><i class="fa-solid fa-check"></i> Build your personalized travel map profile</li>
+                    </ul>
+                    
+                    <div class="author-quote-card">
+                        <i class="fa-solid fa-quote-left quote-icon"></i>
+                        <p class="quote-text">"To travel is to live, and to share is to live twice."</p>
+                        <span class="quote-author">— Wanderscape Editor</span>
+                    </div>
+                </div>
+
+                <div class="share-form-wrapper">
+                    <form id="story-form" class="story-form">
+                        <h3 class="form-title"><i class="fa-solid fa-pen-nib"></i> Write Your Journal</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="form-title">Story Title <span class="required">*</span></label>
+                                <input type="text" id="form-title" placeholder="e.g. Lost in the Streets of Tokyo" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="form-author">Your Name <span class="required">*</span></label>
+                                <input type="text" id="form-author" placeholder="e.g. Alex Mercer" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="form-region">Region <span class="required">*</span></label>
+                                <select id="form-region" required>
+                                    <option value="" disabled selected>Select Continent</option>
+                                    <option value="Europe">Europe</option>
+                                    <option value="Asia">Asia</option>
+                                    <option value="Africa">Africa</option>
+                                    <option value="Americas">Americas</option>
+                                    <option value="Oceania">Oceania</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="form-country">Country <span class="required">*</span></label>
+                                <select id="form-country" required>
+                                    <option value="" disabled selected>Select Country</option>
+                                    <option value="India">India</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="Switzerland">Switzerland</option>
+                                    <option value="Morocco">Morocco</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="USA">United States</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="state-group" style="display: none;">
+                                <label for="form-state">Indian State / UT <span class="required">*</span></label>
+                                <select id="form-state">
+                                    <option value="" disabled selected>Select State / UT</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                    <option value="Assam">Assam</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                    <option value="Goa">Goa</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                    <option value="Jharkhand">Jharkhand</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Manipur">Manipur</option>
+                                    <option value="Meghalaya">Meghalaya</option>
+                                    <option value="Mizoram">Mizoram</option>
+                                    <option value="Nagaland">Nagaland</option>
+                                    <option value="Odisha">Odisha</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Sikkim">Sikkim</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Telangana">Telangana</option>
+                                    <option value="Tripura">Tripura</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="Uttarakhand">Uttarakhand</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Andaman and Nicobar">Andaman and Nicobar</option>
+                                    <option value="Chandigarh">Chandigarh</option>
+                                    <option value="Dadra Nagar Haveli Daman Diu">Dadra Nagar Haveli Daman Diu</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                    <option value="Ladakh">Ladakh</option>
+                                    <option value="Lakshadweep">Lakshadweep</option>
+                                    <option value="Puducherry">Puducherry</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="form-location">Specific City / Location <span class="required">*</span></label>
+                                <input type="text" id="form-location" placeholder="e.g. Kyoto, Mumbai, Zermatt" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="form-duration">Duration (Days)</label>
+                                <input type="number" id="form-duration" min="1" max="90" placeholder="e.g. 5">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="form-budget">Budget Level</label>
+                                <select id="form-budget">
+                                    <option value="$">Budget Friendly ($)</option>
+                                    <option value="$$" selected>Mid-Range ($$)</option>
+                                    <option value="$$$">Luxury ($$$)</option>
+                                    <option value="$$$$">Ultra-Luxury ($$$$)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="form-image">Cover Photo Selection <span class="required">*</span></label>
+                                <div class="image-selector-grid">
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_swiss.jpg" checked>
+                                        <img src="images/post_swiss.jpg" alt="Swiss Alps">
+                                        <span>Swiss Alps</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_kyoto.jpg">
+                                        <img src="images/post_kyoto.jpg" alt="Kyoto Bamboo">
+                                        <span>Kyoto</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_sahara.jpg">
+                                        <img src="images/post_sahara.jpg" alt="Sahara Dunes">
+                                        <span>Sahara</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_amalfi.jpg">
+                                        <img src="images/post_amalfi.jpg" alt="Amalfi Coast">
+                                        <span>Amalfi Coast</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_patagonia.jpg">
+                                        <img src="images/post_patagonia.jpg" alt="Patagonia Peaks">
+                                        <span>Patagonia</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_newyork.jpg">
+                                        <img src="images/post_newyork.jpg" alt="New York City">
+                                        <span>New York</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_sydney.jpg">
+                                        <img src="images/post_sydney.jpg" alt="Sydney Harbour">
+                                        <span>Sydney</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_india.jpg">
+                                        <img src="images/post_india.jpg" alt="Taj Mahal">
+                                        <span>Taj Mahal</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_charminar.jpg">
+                                        <img src="images/post_charminar.jpg" alt="Charminar">
+                                        <span>Charminar</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_meenakshi.jpg">
+                                        <img src="images/post_meenakshi.jpg" alt="Meenakshi Temple">
+                                        <span>Meenakshi Temple</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_ladakh.jpg">
+                                        <img src="images/post_ladakh.jpg" alt="Ladakh">
+                                        <span>Ladakh</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_delhifort.jpg">
+                                        <img src="images/post_delhifort.jpg" alt="Red Fort">
+                                        <span>Red Fort</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_varanasi.jpg">
+                                        <img src="images/post_varanasi.jpg" alt="Varanasi Ghats">
+                                        <span>Varanasi</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_vizag.png">
+                                        <img src="images/post_vizag.png" alt="RK Beach Road">
+                                        <span>Visakhapatnam</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_trivandrum.png">
+                                        <img src="images/post_trivandrum.png" alt="Padmanabhaswamy Temple">
+                                        <span>Thiruvananthapuram</span>
+                                    </label>
+                                    <label class="img-option-card">
+                                        <input type="radio" name="form-image" value="images/post_goabeach.png">
+                                        <img src="images/post_goabeach.png" alt="Goa Beaches">
+                                        <span>Goa</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="form-content">Share Your Experience <span class="required">*</span></label>
+                                <textarea id="form-content" rows="6" placeholder="Describe your highlights, itineraries, budget tips, and unforgettable memories..." required></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <i class="fa-solid fa-paper-plane"></i> Publish Story
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <i class="fa-solid fa-compass compass-logo"></i> Wanderscape
+                    </a>
+                    <p class="footer-desc">A premium, highly interactive portal designed to share breathtaking travel diaries, stunning landscape photographs, and global tips.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-quote">
+                    <h3>Quote of the Day</h3>
+                    <div class="footer-quote-box">
+                        <p id="quote-display">"Not all those who wander are lost."</p>
+                        <span id="quote-author">— J.R.R. Tolkien</span>
+                        <button id="new-quote-btn" class="text-link-btn" aria-label="Next Quote">
+                            <i class="fa-solid fa-rotate"></i> Next Quote
+                        </button>
+                    </div>
+                </div>
+
+                <div class="footer-newsletter">
+                    <h3>Stay Inspired</h3>
+                    <p>Subscribe to receive curated itineraries, travel hacks, and fresh stories directly in your inbox.</p>
+                    <form id="newsletter-form" class="newsletter-form">
+                        <div class="newsletter-input-group">
+                            <input type="email" id="news-email" placeholder="Your email address" required>
+                            <button type="submit" class="btn-subscribe" aria-label="Subscribe">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <span class="newsletter-status" id="newsletter-status"></span>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Wanderscape Travel Blog. Crafted with passion for global adventurers.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Full Article Reader Modal -->
+    <div class="modal" id="article-modal">
+        <div class="modal-overlay" onclick="closeArticleModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeArticleModal()" aria-label="Close Modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="modal-header-img" id="modal-hero-img"></div>
+            <div class="modal-body-content">
+                <div class="modal-meta-row">
+                    <span class="modal-badge" id="modal-region">Region</span>
+                    <span class="modal-read-time" id="modal-read-time"><i class="fa-regular fa-clock"></i> 5 min read</span>
+                </div>
+                <h2 class="modal-title" id="modal-title">Article Title</h2>
+                
+                <div class="author-meta">
+                    <div class="author-avatar" id="modal-author-avatar">A</div>
+                    <div>
+                        <div class="author-name" id="modal-author-name">Author Name</div>
+                        <div class="publish-date" id="modal-date">Published Date</div>
+                    </div>
+                </div>
+
+                <!-- Travel Specs Board -->
+                <div class="specs-board">
+                    <div class="spec-cell">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div>
+                            <span class="spec-label">Location</span>
+                            <span class="spec-value" id="modal-location">Tokyo, Japan</span>
+                        </div>
+                    </div>
+                    <div class="spec-cell">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div>
+                            <span class="spec-label">Duration</span>
+                            <span class="spec-value" id="modal-duration">7 Days</span>
+                        </div>
+                    </div>
+                    <div class="spec-cell">
+                        <i class="fa-solid fa-wallet"></i>
+                        <div>
+                            <span class="spec-label">Budget</span>
+                            <span class="spec-value" id="modal-budget">$$$</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-text" id="modal-text">
+                    <!-- Loaded dynamically -->
+                </div>
+
+                <!-- Interactive Comment Form & list -->
+                <div class="comments-section">
+                    <h3>Comments (<span id="comment-count">0</span>)</h3>
+                    <div class="comments-list" id="comments-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                    <form id="comment-form" class="comment-form">
+                        <h4>Leave a Comment</h4>
+                        <div class="comment-inputs">
+                            <input type="text" id="comment-name" placeholder="Your Name" required>
+                            <textarea id="comment-text" rows="3" placeholder="Join the discussion, share tips or feedback..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Lightbox Modal -->
+    <div class="modal lightbox-modal" id="lightbox-modal">
+        <div class="modal-overlay" onclick="closeLightbox()"></div>
+        <button class="modal-close" onclick="closeLightbox()" aria-label="Close Lightbox">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="lightbox-content">
+            <button class="lightbox-prev" onclick="prevLightboxImage()" aria-label="Previous Image">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="lightbox-img-wrapper">
+                <img id="lightbox-img" src="" alt="Travel Snapshot">
+                <div class="lightbox-caption" id="lightbox-caption">Snapshot description</div>
+            </div>
+            <button class="lightbox-next" onclick="nextLightboxImage()" aria-label="Next Image">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Execution -->
+    <script src="app.js"></script>
+</body>
+</html>
