@@ -478,6 +478,38 @@ let blogPosts = [
     }
 ];
 
+// Map post IDs to real-world coordinates [latitude, longitude]
+const defaultPostCoordinates = {
+    1: [35.0116, 135.7681], // Kyoto, Japan
+    2: [45.9763, 7.6585],   // Swiss Alps
+    3: [31.0983, -4.0033],   // Sahara Desert, Morocco
+    4: [40.6281, 14.4850],   // Amalfi Coast, Italy
+    5: [40.7128, -74.0060],  // New York, USA
+    6: [-49.3315, -72.8860], // Patagonia, Argentina
+    7: [-33.8688, 151.2093], // Sydney, Australia
+    8: [27.1751, 78.0421],   // Agra (Taj Mahal), India
+    9: [17.3616, 78.4747],   // Hyderabad, India
+    10: [9.9195, 78.1193],   // Madurai, India
+    11: [17.7120, 83.3220],  // Visakhapatnam, India
+    12: [8.4830, 76.9436],   // Thiruvananthapuram, India
+    13: [12.2562, 75.7384],  // Coorg, India
+    14: [15.0100, 74.0200],   // Goa, India
+    15: [18.9217, 72.8330],  // Mumbai, India
+    16: [22.2402, 68.9686],  // Dwarka, India
+    17: [25.3176, 82.9739],  // Varanasi, India
+    18: [26.9157, 70.9083],  // Jaisalmer, India
+    19: [34.1526, 77.5771],  // Ladakh, India
+    20: [28.6139, 77.2090],  // Delhi, India
+    21: [25.2702, 91.7323]   // Northeast India (Cherrapunji)
+};
+
+// Inject coordinates into the starter blogPosts data
+blogPosts.forEach(post => {
+    if (defaultPostCoordinates[post.id]) {
+        post.coordinates = defaultPostCoordinates[post.id];
+    }
+});
+
 // Photo Gallery Items
 const galleryPhotos = [
     { src: "images/post_kyoto.jpg", title: "Zen Pathway", location: "Kyoto, Japan" },
@@ -516,6 +548,83 @@ let activeFilter = 'all';
 let searchQuery = '';
 let activeMapDestination = '';
 let currentLightboxIndex = 0;
+
+// Map and Leaflet instance references
+let leafletMap = null;
+let leafletTileLayer = null;
+let leafletMarkersGroup = null;
+
+// Geocoding Fallbacks
+const countryCoordinates = {
+    "India": [20.5937, 78.9629],
+    "Japan": [36.2048, 138.2529],
+    "Switzerland": [46.8182, 8.2275],
+    "Morocco": [31.7917, -7.0926],
+    "Italy": [41.8719, 12.5674],
+    "Argentina": [-38.4161, -63.6167],
+    "USA": [37.0902, -95.7129],
+    "Australia": [-25.2744, 133.7751]
+};
+
+const stateCoordinates = {
+    "Andhra Pradesh": [15.9129, 79.7400],
+    "Arunachal Pradesh": [28.2180, 94.7278],
+    "Assam": [26.2006, 92.9376],
+    "Bihar": [25.0961, 85.3131],
+    "Chhattisgarh": [21.2787, 81.8661],
+    "Goa": [15.2993, 74.1240],
+    "Gujarat": [22.2587, 71.1924],
+    "Haryana": [29.0588, 76.0856],
+    "Himachal Pradesh": [31.1048, 77.1734],
+    "Jharkhand": [23.6102, 85.2799],
+    "Karnataka": [15.3173, 75.7139],
+    "Kerala": [10.8505, 76.2711],
+    "Madhya Pradesh": [22.9734, 78.6569],
+    "Maharashtra": [19.7515, 75.7139],
+    "Manipur": [24.6637, 93.9063],
+    "Meghalaya": [25.4670, 91.3662],
+    "Mizoram": [23.1645, 92.9376],
+    "Nagaland": [26.1584, 94.5624],
+    "Odisha": [20.9517, 85.0985],
+    "Punjab": [31.1471, 75.3412],
+    "Rajasthan": [27.0238, 74.2179],
+    "Sikkim": [27.5330, 88.5122],
+    "Tamil Nadu": [11.1271, 78.6569],
+    "Telangana": [18.1124, 79.0193],
+    "Tripura": [23.9408, 91.9882],
+    "Uttar Pradesh": [26.8467, 80.9462],
+    "Uttarakhand": [30.0668, 79.0193],
+    "West Bengal": [22.9868, 87.8550],
+    "Andaman and Nicobar": [11.7401, 92.6586],
+    "Chandigarh": [30.7333, 76.7794],
+    "Dadra Nagar Haveli Daman Diu": [20.3974, 72.8328],
+    "Delhi": [28.6139, 77.2090],
+    "Jammu and Kashmir": [33.7782, 76.5762],
+    "Ladakh": [34.1526, 77.5771],
+    "Lakshadweep": [10.5667, 72.6417],
+    "Puducherry": [11.9416, 79.8083]
+};
+
+const regionCoordinates = {
+    "Europe": [48.5260, 15.2551],
+    "Asia": [34.0479, 100.6197],
+    "Africa": [1.6508, 16.3281],
+    "Americas": [19.4326, -99.1332],
+    "Oceania": [-25.2744, 133.7751]
+};
+
+function getPostCoordinates(region, country, state) {
+    if (country === "India" && state && stateCoordinates[state]) {
+        return stateCoordinates[state];
+    }
+    if (country && countryCoordinates[country]) {
+        return countryCoordinates[country];
+    }
+    if (region && regionCoordinates[region]) {
+        return regionCoordinates[region];
+    }
+    return [20, 0];
+}
 
 // --- DYNAMIC RENDERING ---
 
@@ -716,34 +825,179 @@ function initGlobalSearch() {
         filterBtns.forEach(b => b.classList.remove("active"));
         document.querySelector("[data-filter='all']").classList.add("active");
         
-        document.querySelectorAll(".map-pin").forEach(p => p.classList.remove("active"));
-        
-        renderBlogGrid();
+        resetActiveMapDestination();
     });
 }
 
-// Interactive Map Pins
+// Initialize Leaflet Map and Map Markers
 function initMapInteraction() {
-    const pins = document.querySelectorAll(".map-pin");
-    pins.forEach(pin => {
-        pin.addEventListener("click", () => {
-            const destName = pin.getAttribute("data-destination");
-            
-            // Toggle active map pin
-            if (pin.classList.contains("active")) {
-                pin.classList.remove("active");
+    const mapElement = document.getElementById("world-map");
+    if (!mapElement) return;
+
+    // Determine initial tile style based on active theme
+    const activeTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const darkUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    const lightUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+    const initialUrl = activeTheme === 'dark' ? darkUrl : lightUrl;
+
+    // Create the map instance
+    leafletMap = L.map('world-map', {
+        center: [25, 10], // Coordinates centered around Europe/Africa/Asia
+        zoom: 2,
+        minZoom: 1.8,
+        maxZoom: 9,
+        scrollWheelZoom: false, // Disable scroll zoom so it doesn't hijack page scroll
+        attributionControl: true
+    });
+
+    // Add CartoDB tile layer
+    leafletTileLayer = L.tileLayer(initialUrl, {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(leafletMap);
+
+    // Create markers layer group
+    leafletMarkersGroup = L.layerGroup().addTo(leafletMap);
+
+    // Render initial pins
+    renderMapPins();
+
+    // Map background click: reset map filters
+    leafletMap.on('click', (e) => {
+        if (e.originalEvent && (e.originalEvent.target.id === 'world-map' || e.originalEvent.target.classList.contains('leaflet-container'))) {
+            resetActiveMapDestination();
+        }
+    });
+}
+
+// Render all blog post locations as pins on the Leaflet map
+function renderMapPins() {
+    if (!leafletMap || !leafletMarkersGroup) return;
+
+    // Clear existing markers
+    leafletMarkersGroup.clearLayers();
+    leafletMarkers = [];
+
+    // Group posts by coordinate/location to prevent exact overlaps
+    const locationGroups = {};
+    blogPosts.forEach(post => {
+        if (!post.coordinates) return;
+        const key = `${post.coordinates[0].toFixed(4)},${post.coordinates[1].toFixed(4)}`;
+        if (!locationGroups[key]) {
+            locationGroups[key] = [];
+        }
+        locationGroups[key].push(post);
+    });
+
+    // Draw markers
+    Object.keys(locationGroups).forEach(key => {
+        const postsAtLocation = locationGroups[key];
+        const coordinates = postsAtLocation[0].coordinates;
+        const locationName = postsAtLocation[0].location;
+        const destName = postsAtLocation[0].region === "Asia" && postsAtLocation[0].location.includes("Japan") ? "Kyoto" : 
+                         postsAtLocation[0].location.includes("Swiss") ? "Swiss Alps" :
+                         postsAtLocation[0].location.includes("Sahara") ? "Sahara Desert" :
+                         postsAtLocation[0].location.includes("Amalfi") ? "Amalfi Coast" :
+                         postsAtLocation[0].location.includes("New York") ? "New York" :
+                         postsAtLocation[0].location.includes("Patagonia") ? "Patagonia" :
+                         postsAtLocation[0].location.includes("Sydney") ? "Sydney" :
+                         postsAtLocation[0].location.includes("India") ? "India" : locationName;
+
+        const isActive = activeMapDestination !== '' && 
+            (locationName.toLowerCase().includes(activeMapDestination.toLowerCase()) || 
+             destName.toLowerCase().includes(activeMapDestination.toLowerCase()));
+        
+        const pinClass = `custom-map-pin${isActive ? ' active' : ''}`;
+
+        const labelName = postsAtLocation[0].location.split(',')[0];
+        const customIcon = L.divIcon({
+            className: pinClass,
+            html: `
+                <div class="pin-pulse-effect"></div>
+                <div class="pin-dot-effect"></div>
+                <div class="pin-label-effect">${postsAtLocation.length === 1 ? labelName : labelName + ' (' + postsAtLocation.length + ')'}</div>
+            `,
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+        });
+
+        const marker = L.marker(coordinates, { icon: customIcon });
+
+        // Build Popup HTML (scrollable if multiple posts)
+        let popupContent = `<div class="map-popup-card">`;
+        if (postsAtLocation.length === 1) {
+            const p = postsAtLocation[0];
+            popupContent += `
+                <img src="${p.image}" class="popup-img" alt="${p.title}">
+                <div class="popup-info">
+                    <span class="popup-region">${p.region}</span>
+                    <h4 class="popup-title">${p.title}</h4>
+                    <a href="javascript:void(0)" onclick="openArticleModal(${p.id})" class="popup-link">Read Story <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            `;
+        } else {
+            popupContent += `
+                <div class="popup-info" style="max-height: 180px; overflow-y: auto; width: 100%;">
+                    <span class="popup-region">${postsAtLocation[0].region}</span>
+                    <h4 class="popup-title" style="margin-bottom: 8px;">${postsAtLocation[0].location.split(',')[0]} (${postsAtLocation.length} Stories)</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            `;
+            postsAtLocation.forEach(p => {
+                popupContent += `
+                    <li style="border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+                        <a href="javascript:void(0)" onclick="openArticleModal(${p.id})" style="font-weight: 500; font-size: 0.85rem; color: var(--text-primary); text-decoration: none; line-height: 1.2; display: block; margin-bottom: 2px;">${p.title}</a>
+                        <a href="javascript:void(0)" onclick="openArticleModal(${p.id})" class="popup-link" style="margin-top: 0; font-size: 0.75rem;">Read Story <i class="fa-solid fa-arrow-right"></i></a>
+                    </li>
+                `;
+            });
+            popupContent += `
+                    </ul>
+                </div>
+            `;
+        }
+        popupContent += `</div>`;
+
+        marker.bindPopup(popupContent, {
+            closeButton: false,
+            className: 'custom-leaflet-popup',
+            offset: [0, -10]
+        });
+
+        // Click interaction
+        marker.on('click', () => {
+            if (activeMapDestination === destName || activeMapDestination === locationName) {
                 activeMapDestination = '';
+                if (marker.getElement()) marker.getElement().classList.remove('active');
             } else {
-                pins.forEach(p => p.classList.remove("active"));
-                pin.classList.add("active");
+                document.querySelectorAll('.custom-map-pin').forEach(el => el.classList.remove('active'));
                 activeMapDestination = destName;
+                if (marker.getElement()) marker.getElement().classList.add('active');
             }
-            
-            // Re-render and scroll down to the blog section
+
             renderBlogGrid();
             document.getElementById("blog-section").scrollIntoView({ behavior: 'smooth' });
         });
+
+        marker.addTo(leafletMarkersGroup);
+        leafletMarkers.push({ marker, destName, locationName });
     });
+}
+
+// Update Leaflet tile layers dynamically based on theme change
+function updateMapTheme(theme) {
+    if (!leafletTileLayer) return;
+    const darkUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    const lightUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+    const newUrl = theme === 'dark' ? darkUrl : lightUrl;
+    leafletTileLayer.setUrl(newUrl);
+}
+
+// Helper to reset map marker highlights and filters
+function resetActiveMapDestination() {
+    activeMapDestination = '';
+    document.querySelectorAll('.custom-map-pin').forEach(el => el.classList.remove('active'));
+    renderBlogGrid();
 }
 
 // --- MODALS (ARTICLE & LIGHTBOX) ---
@@ -835,7 +1089,6 @@ commentForm.addEventListener("submit", (e) => {
 });
 
 // Lightbox modal logic
-// Lightbox modal logic
 function openLightbox(index) {
     currentLightboxIndex = index;
     const photo = galleryPhotos[index];
@@ -926,6 +1179,9 @@ function initForm() {
             location = `${city}, ${country}`;
         }
         
+        // Calculate coordinates for the new post
+        const coordinates = getPostCoordinates(region, country, state);
+        
         // Create new Post Object
         const newPost = {
             id: blogPosts.length + 1,
@@ -941,7 +1197,8 @@ function initForm() {
             image: image,
             description: contentVal.substring(0, 150) + (contentVal.length > 150 ? '...' : ''),
             content: formattedContent,
-            comments: []
+            comments: [],
+            coordinates: coordinates
         };
         
         // Add to posts stack at the beginning
@@ -954,6 +1211,9 @@ function initForm() {
         
         // Re-render blog grid
         renderBlogGrid();
+        
+        // Re-render map pins to include the new post
+        renderMapPins();
         
         // Scroll to blog grid to show the newly added story
         document.getElementById("blog-section").scrollIntoView({ behavior: 'smooth' });
@@ -1027,6 +1287,7 @@ function initTheme() {
         document.documentElement.setAttribute("data-theme", targetTheme);
         localStorage.setItem("wanderscape-theme", targetTheme);
         updateThemeUI(targetTheme);
+        updateMapTheme(targetTheme);
     });
     
     function updateThemeUI(theme) {
